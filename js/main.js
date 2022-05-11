@@ -135,8 +135,8 @@ window.onload = function() {
         if (ui_swipe_mouse === true) {
             let dx = e.clientX - ui_swipe_mouse_start.x;
             let limit = 20;
-            if (dx < -limit) { PreviousCameraTarget(); ui_swipe_mouse = false; }
-            else if(dx > limit) {NextCameraTarget(); ui_swipe_mouse = false; }
+            if (dx > limit) { PreviousCameraTarget(); ui_swipe_mouse = false; }
+            else if(dx < -limit) {NextCameraTarget(); ui_swipe_mouse = false; }
         }
     });
     window.addEventListener('mouseup', e =>  { ui_swipe_mouse = false; });
@@ -165,8 +165,8 @@ window.onload = function() {
                 if (e.changedTouches[i].identifier === ui_swipe_touch_id) {
                     let dx =  e.changedTouches[e.changedTouches.length - 1].clientX - ui_swipe_touch_start.x;
                     let limit = 20;
-                    if (dx < -limit) { PreviousCameraTarget(); ui_swipe_touch = false; }
-                    else if(dx > limit) {NextCameraTarget(); ui_swipe_touch = false; }
+                    if (dx > limit) { PreviousCameraTarget(); ui_swipe_touch = false; }
+                    else if(dx < -limit) {NextCameraTarget(); ui_swipe_touch = false; }
                     break;
                 }
                 i++;
