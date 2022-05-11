@@ -112,7 +112,7 @@ window.onload = function() {
             }
         }
     });
-    // swithh taget tv or open content page via mouse input:
+    // switch target tv or open content page via mouse input:
     window.addEventListener('mousedown', e => {
         ui_swipe_mouse = false;
         // if TV content page is open --> return
@@ -247,7 +247,7 @@ function NextCameraTarget() {
     camera_target_tv_index++;
     if (camera_target_tv_index >= tvs.length) camera_target_tv_index = 0;
     tvs[camera_target_tv_index].PlayScreenVideo();
-    // briefly show the title of targetet tv:
+    // briefly show the title of targeted tv:
     PreviewCurrentTargetTvTitle();
 }
 
@@ -258,7 +258,7 @@ function PreviousCameraTarget() {
     camera_target_tv_index--;
     if (camera_target_tv_index < 0) camera_target_tv_index = tvs.length - 1;
     tvs[camera_target_tv_index].PlayScreenVideo();
-    // briefly show the title of targetet tv:
+    // briefly show the title of targeted tv:
     PreviewCurrentTargetTvTitle();
 }
 
