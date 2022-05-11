@@ -203,7 +203,7 @@ function SwitchNextTvPage() {
 function SwitchPreviousTvPage() {
     let prev = open_tv_page_index - 1;
     if (prev < 0) prev = tvs.length - 1;
-    OpenTvPage(next);
+    OpenTvPage(prev);
 }
 
 
