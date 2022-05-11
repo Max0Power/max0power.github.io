@@ -85,6 +85,7 @@ window.onload = function() {
 
     // set window resize event:
     window.onresize = OnWindowResize;
+    OnWindowResize();
 
     // scroll wheel event:
     window.addEventListener('wheel', (event) => {
