@@ -1,7 +1,7 @@
 // Created by Jussi Parviainen 2022
 "use strict";
 const DEG_TO_RAD = 0.01745329252;
-let renderer, scene, camera, camera_root, raycaster, star_group = undefined;
+let canvas, renderer, scene, camera, camera_root, raycaster, star_group = undefined;
 
 // planet (created from gltf-file):
 let polyworld = undefined;
@@ -9,14 +9,18 @@ let polyworld = undefined;
 let tvs = [];
 const tv_body_col_default = {r: 0.5, g: 0.5, b: 0.5};
 const tv_body_col_hover = {r: 0.7, g: 0.7, b: 0.7};
-// scroll by pointer variables:
+// variables for changing camera target tv:
 const ui_scrollwheel_cooldown = 0.1;
 let ui_is_scrollwheel_on_cooldown = false;
-let ui_scroll_with_pointer = false;
-let ui_start_scroll_pointer_pos = {x:0, y: 0};
-let ui_previous_pointer_pos = {x: 0, y: 0};
+let ui_swipe_mouse = false;
+let ui_swipe_mouse_start = {x:0, y:0};
+let ui_prev_mouse_pos = {x: 0, y: 0};
+let ui_swipe_touch = false;
+let ui_swipe_touch_start = {x:0, y:0};
+let ui_swipe_touch_id;
+
 // variables for camera movement:
-const tv_dst_from_camera = 5;
+let tv_dst_from_camera = 5;
 const camera_anim_rot_speed = 6;
 const camera_anim_pos_speed = 6;
 // index variables for targeted tv:
@@ -29,11 +33,13 @@ let open_tv_page_index = -1; // open tv page index (gives more information about
 window.onload = function() {
 
     // Init  Three.Renderer() and let's also disable canvas context menu:
-    const canvas = document.getElementById('three_canvas');
+    canvas = document.getElementById('three_canvas');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
     canvas.oncontextmenu = function(e) { e.preventDefault(); e.stopPropagation(); }
     renderer = new THREE.WebGLRenderer( {canvas: canvas, antialias: true});
-    renderer.setPixelRatio(window.devicePixelRatio);
-    renderer.setSize(window.innerWidth, window.innerHeight);
+    //renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.setSize(canvas.width, canvas.height);
 
     // Init THREE.Scene():
     scene = new THREE.Scene();
@@ -45,7 +51,7 @@ window.onload = function() {
     // Init camera to scene: (camera is moved around origin so actual camera is child of camera_root)
     camera_root = new THREE.Group(); camera_root.position.x = 0; camera_root.position.y = 0; camera_root.position.z = 0;
     scene.add(camera_root);
-    camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 2000.0); // fov, aspect, near, far
+    camera = new THREE.PerspectiveCamera(60, canvas.width / canvas.height, 0.1, 2000.0); // fov, aspect, near, far
     camera_root.add(camera);
     camera.position.x = 0; camera.position.y = 0; camera.position.z = 500;
 
@@ -106,57 +112,85 @@ window.onload = function() {
             }
         }
     });
-    // pointer down event:
-    window.addEventListener("pointerdown", (event) => {
+    // swithh taget tv or open content page via mouse input:
+    window.addEventListener('mousedown', e => {
+        ui_swipe_mouse = false;
         // if TV content page is open --> return
         if (open_tv_page_index >= 0 && open_tv_page_index < tvs.length) return;
-        // let's raycast televisions:
-        RaycastTelevisions(event.clientX, event.clientY, 10);
-        // if ray hit television:
+        ui_swipe_mouse_start.x = e.clientX;
+        ui_swipe_mouse_start.y = e.clientY;
+        RaycastTelevisions(ui_swipe_mouse_start.x, ui_swipe_mouse_start.y, 10);
         if (selected_tv_index >= 0 && selected_tv_index < tvs.length) {
             open_tv_page_index = selected_tv_index;
             tvs[open_tv_page_index].container.className = 'container fadein';
-            document.getElementsByName('viewport')[0].content = "width=device-width, initial-scale=1.0, maximum-scale=12.0, minimum-scale=1.0, user-scalable=yes";
+            document.getElementsByName('viewport')[0].content = "width=device-width, initial-scale=1.0, maximum-scale=12.0, minimum-scale=1.0, user-scalable=yes"; // allow pinch zoom
         }
-        else { // else let's take the pointer position for the scroll event with pointer
-            ui_start_scroll_pointer_pos.x = event.clientX;
-            ui_start_scroll_pointer_pos.y = event.clientY;
-            ui_scroll_with_pointer = true;
+        else {
+            ui_swipe_mouse = true;
         }
     });
-    // pointer move event:
-    window.addEventListener('pointermove', (event) => {
-        // let's track pointer position for the raycasting in gameloop function:
-        ui_previous_pointer_pos.x = event.clientX;
-        ui_previous_pointer_pos.y = event.clientY;
-        // listen for the scroll with pointer event:
-        if (ui_scroll_with_pointer) {
-            let dx = event.clientX - ui_start_scroll_pointer_pos.x;
-            let dy = event.clientY - ui_start_scroll_pointer_pos.y;
+    window.addEventListener('mousemove', e => {
+        ui_prev_mouse_pos.x = e.clientX;
+        ui_prev_mouse_pos.y = e.clientY;
+        if (ui_swipe_mouse === true) {
+            let dx = e.clientX - ui_swipe_mouse_start.x;
             let limit = 20;
-            if (dx < -limit || dy > limit) {
-                PreviousCameraTarget();
-                ui_scroll_with_pointer = false;
-            }
-            else if (dx > limit || dy < -limit) {
-                NextCameraTarget();
-                ui_scroll_with_pointer = false;
+            if (dx < -limit) { PreviousCameraTarget(); ui_swipe_mouse = false; }
+            else if(dx > limit) {NextCameraTarget(); ui_swipe_mouse = false; }
+        }
+    });
+    window.addEventListener('mouseup', e =>  { ui_swipe_mouse = false; });
+    // switch target tv or open content page via touch input:
+    window.addEventListener('touchstart', e => {
+        ui_swipe_touch = false;
+        // if TV content page is open --> return
+        if (open_tv_page_index >= 0 && open_tv_page_index < tvs.length) return;
+        ui_swipe_touch_start.x = e.changedTouches[e.changedTouches.length - 1].clientX;
+        ui_swipe_touch_start.y = e.changedTouches[e.changedTouches.length - 1].clientY;
+        ui_swipe_touch_id = e.changedTouches[e.changedTouches.length - 1].identifier;
+        RaycastTelevisions(ui_swipe_touch_start.x, ui_swipe_touch_start.y, 10);
+        if (selected_tv_index >= 0 && selected_tv_index < tvs.length) {
+            open_tv_page_index = selected_tv_index;
+            tvs[open_tv_page_index].container.className = 'container fadein';
+            document.getElementsByName('viewport')[0].content = "width=device-width, initial-scale=1.0, maximum-scale=12.0, minimum-scale=1.0, user-scalable=yes"; // allow pinch zoom
+        }
+        else {
+            ui_swipe_touch = true;
+        }
+    });     
+    window.addEventListener('touchmove', e => {
+        if (ui_swipe_touch === true) {
+            let i = 0;
+            while(i < e.changedTouches.length) {
+                if (e.changedTouches[i].identifier === ui_swipe_touch_id) {
+                    let dx =  e.changedTouches[e.changedTouches.length - 1].clientX - ui_swipe_touch_start.x;
+                    let limit = 20;
+                    if (dx < -limit) { PreviousCameraTarget(); ui_swipe_touch = false; }
+                    else if(dx > limit) {NextCameraTarget(); ui_swipe_touch = false; }
+                    break;
+                }
+                i++;
             }
         }
     });
-    // pointer up event:
-    window.addEventListener('pointerup', (event) => {
-        ui_scroll_with_pointer = false; // Scroll with pointer will be automatically canceled if it was true.
+    window.addEventListener('touchend', e => {
+        if (ui_swipe_touch === false) return; 
+        let i = 0; 
+        while(i < e.changedTouches.length) {
+            if (e.changedTouches[i].identifier === ui_swipe_touch_id) { ui_swipe_touch = false; }
+            i++;
+        } 
     });
 }
 
-
 // window resize function: readjust the renderer and camera.
 function OnWindowResize() {
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setPixelRatio(window.devicePixelRatio);
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix ();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    // lets adjust camera distance based on window size:
+    if (window.innerWidth < window.innerHeight) tv_dst_from_camera = 5;
+    else tv_dst_from_camera = 3;
 }
 
 
@@ -175,7 +209,7 @@ function OpenTvPage(index) {
     // open tv page:
     tvs[open_tv_page_index].container.className = 'container fadeinslow';
     window.scrollTo(0, 0); // scroll the window up
-    document.getElementsByName('viewport')[0].content = "width=device-width, initial-scale=1.0, maximum-scale=12.0, minimum-scale=1.0, user-scalable=yes";
+    document.getElementsByName('viewport')[0].content = "width=device-width, initial-scale=1.0, maximum-scale=12.0, minimum-scale=1.0, user-scalable=yes"; // allow pinch zoom
 }
 
 
@@ -186,7 +220,7 @@ function CloseCurrentTvPage() {
         tvs[open_tv_page_index].PauseContainerVideos();
         open_tv_page_index = -1;
         window.scrollTo(0, 0);
-        document.getElementsByName('viewport')[0].content = "width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no";
+        document.getElementsByName('viewport')[0].content = "width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"; // disable pinch zoom
     }
 }
 
@@ -299,7 +333,7 @@ function gameloop(time) {
         camera_root.rotation.z = camera_root.rotation.z + (target_rot.z - camera_root.rotation.z) * t_rot;
     }
     // raycast televisions (highlighting if pointer hovers over):
-    RaycastTelevisions(ui_previous_pointer_pos.x, ui_previous_pointer_pos.y, 10);
+    RaycastTelevisions(ui_prev_mouse_pos.x, ui_prev_mouse_pos.y, 10);
     // Update tv:ees (handles the floating animation):
     UpdateTVs(delta);
     // render scene:
