@@ -116,6 +116,7 @@ window.onload = function() {
         if (selected_tv_index >= 0 && selected_tv_index < tvs.length) {
             open_tv_page_index = selected_tv_index;
             tvs[open_tv_page_index].container.className = 'container fadein';
+            document.getElementsByName('viewport')[0].content = "width=device-width, initial-scale=1.0, maximum-scale=12.0, minimum-scale=1.0, user-scalable=yes";
         }
         else { // else let's take the pointer position for the scroll event with pointer
             ui_start_scroll_pointer_pos.x = event.clientX;
@@ -153,6 +154,7 @@ window.onload = function() {
 // window resize function: readjust the renderer and camera.
 function OnWindowResize() {
     renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(window.devicePixelRatio);
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix ();
 }
@@ -161,13 +163,19 @@ function OnWindowResize() {
 // opens TV content page with given index:
 function OpenTvPage(index) {
     if (index < 0 || index > tvs.length - 1) return;
+    // pause screen video if target changes:
+    if (camera_target_tv_index != index && camera_target_tv_index >= 0 && camera_target_tv_index < tvs.length) tvs[camera_target_tv_index].PauseScreenVideo();
+    // close current TV page if open:
     CloseCurrentTvPage();
-    if (camera_target_tv_index >= 0 && camera_target_tv_index < tvs.length) tvs[camera_target_tv_index].PauseScreenVideo();
+    // set parameters for current tv page and camera target:
     open_tv_page_index = index;
     camera_target_tv_index = index;
+    // play camera target tv video:
     tvs[camera_target_tv_index].PlayScreenVideo();
+    // open tv page:
     tvs[open_tv_page_index].container.className = 'container fadeinslow';
-    window.scrollTo(0, 0);
+    window.scrollTo(0, 0); // scroll the window up
+    document.getElementsByName('viewport')[0].content = "width=device-width, initial-scale=1.0, maximum-scale=12.0, minimum-scale=1.0, user-scalable=yes";
 }
 
 
@@ -177,37 +185,25 @@ function CloseCurrentTvPage() {
         tvs[open_tv_page_index].container.className = 'container hide';
         tvs[open_tv_page_index].PauseContainerVideos();
         open_tv_page_index = -1;
+        window.scrollTo(0, 0);
+        document.getElementsByName('viewport')[0].content = "width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no";
     }
 }
 
 
 // Switch automatically to next TV content page:
 function SwitchNextTvPage() {
-    if (open_tv_page_index >= 0 && open_tv_page_index < tvs.length) {
-        tvs[open_tv_page_index].container.className = 'container hide';
-        tvs[camera_target_tv_index].PauseScreenVideo();
-        tvs[camera_target_tv_index].PauseContainerVideos();
-    }
-    open_tv_page_index++; if (open_tv_page_index >= tvs.length) open_tv_page_index = 0;
-    tvs[open_tv_page_index].container.className = 'container fadeinslow';
-    tvs[open_tv_page_index].PlayScreenVideo();
-    camera_target_tv_index = open_tv_page_index;
-    window.scrollTo(0, 0);
+    let next = open_tv_page_index + 1;
+    if (next >= tvs.length) next = 0;
+    OpenTvPage(next);
 }
 
 
 // Switch automatically to previous TV content page:
 function SwitchPreviousTvPage() {
-    if (open_tv_page_index >= 0 && open_tv_page_index < tvs.length) {
-        tvs[open_tv_page_index].container.className = 'container hide';
-        tvs[camera_target_tv_index].PauseScreenVideo();
-        tvs[camera_target_tv_index].PauseContainerVideos();
-    }
-    open_tv_page_index--; if (open_tv_page_index < 0) open_tv_page_index = tvs.length - 1;
-    tvs[open_tv_page_index].container.className = 'container fadeinslow';
-    tvs[open_tv_page_index].PlayScreenVideo();
-    camera_target_tv_index = open_tv_page_index;
-    window.scrollTo(0, 0);
+    let prev = open_tv_page_index - 1;
+    if (prev < 0) prev = tvs.length - 1;
+    OpenTvPage(next);
 }
 
 
