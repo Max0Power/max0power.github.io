@@ -5,161 +5,119 @@
     <link rel="icon" type="image/x-icon" href="/images/favicon.png">
     <title>Homepage - Jussi Parviainen</title>
     <style>
-        html,body {background-color: #1a1a1a; color: #ffffff; font-family: Verdana, sans-serif;}
+        html,body {background-color: #1a1a1a; color: #ffffff; font-family: Verdana, sans-serif; padding: 0px; margin: 0px;}
         a {color: aqua;}
-        .content {max-width: 1000px; margin:0px auto;}
+        .container {max-width: 1000px; margin:0px auto; position: relative; left: 0px; right: 0px; top:0px; padding: 0px; z-index: 100;}
+        .content {width: calc(100% - 32px); background-color: #101010c0; border-radius: 16px; padding: 16px 16px; margin: 64px 0px;}
+        .background {display: block; position:fixed; width: 1920px; height: 1080px; top: 0; left: 0; margin: 0px; padding: 0px; z-index: 1;}
+        .centered {text-align: center;}
     </style>
+    <script src="js/three.min.js"></script>
+    <script src="js/simplex.min.js"></script>
+    <script src="js/terrainScroller.min.js"></script> 
 </head>
 <body>
+    <canvas class="background" id="BackgroundCanvas"></canvas>
+    <div class="container">
 
-    <div class="content">
+        <!--Introduction-->
+        <div class="content">
+            <h1>Welcome to my homepage!</h1>
+            <p>Hello! My name is Jussi Parviainen and I am a Finnish programmer with a master's degree in computer science. On this site, I present some of the projects I have done.</p>
 
-    <!--Introduction-->
-    <h1 id="Link0">Introduction</h1>
-    <p>Hi, my name is Jussi Parviainen. I am a Finnish programmer who graduated in 2022 with a master's degree in computer science from the University of Jyväskylä. 
-        I am specialized in game development and have been using the Unity game engine since 2016. I also have some experience with other game engines like Unreal and Godot. 
-        In addition to games, I also like to develop/design all kinds of applications and tools. On this site, I present some of the projects I have done.</p>
-    <p>Feel free to contact me: jussi.parviainen.dev@gmail.com</p>
-    <h3>Table of contents:</h3>
-    <ol>
-        <li><a href="#Link1">Ismene (2019)</a></li>
-        <li><a href="#Link2">Game Development Challenge Projects (2019)</a></li>
-        <li><a href="#Link3">Dream Beats (2020)</a></li>
-        <li><a href="#Link4">Game Technology Projects (2021)</a></li>
-        <li><a href="#Link5">Block Builder 3D (2021)</a></li>
-        <li><a href="#Link6">Uber Terrain (2021)</a></li>
-        <li><a href="#Link7">Master's thesis (2021)</a></li>
-        <li><a href="#Link8">Rect Hero (2022)</a></li>
-        <li><a href="#Link9">Escape (2022)</a></li>
-    </ol>
+            <p>Feel free to contact me: jussi.parviainen.dev@gmail.com</p>
+        </div>
 
-    <br>
-    <hr>
+        <!--Ismene (2019)-->
+        <div class="content">
+            <h1>Ismene (2019)</h1>
+            <video style='width:100%;' controls preload="none" poster="images/IsmeneThumbnail.png">
+                <source src='videos/Ismene.mp4' type="video/mp4">
+                Your browser doesn't support HTML5 video.
+            </video>
+            <p class="centered"><a href="https://max0power.github.io/Ismene/">Download</a></p>
+        </div>
 
-    <!--Ismene (2019)-->
-    <h1 id="Link1">Ismene (2019)</h1>
-    <video style='width:100%;' controls preload="none" poster="images/IsmeneThumbnail.png">
-        <source src='videos/Ismene.mp4' type="video/mp4">
-        Your browser doesn't support HTML5 video.
-    </video>
-    <p>Ismene is a platform game that was developed during a game project course held in 2019.</p>
-    <p>You can download Ismene from <a href="https://max0power.github.io/Ismene/">here</a>.</p>
+        <!-- Game Development Challenge Projects (2019)-->
+        <div class="content">
+            <h1>Game Development Challenge Projects (2019)</h1>
+            <video style='width:100%;' controls preload="none" poster="images/OrbiterThumbnail.png">
+                <source src='videos/GDCProjects2019.mp4' type="video/mp4">
+                Your browser doesn't support HTML5 video.
+            </video>
+            <p class="centered"></p>
+        </div>
 
-    <br>
-    <hr>
+        <!--Dream Beats (2020)-->
+        <div class="content">
+            <h1>Dream Beats (2020)</h1>
+            <video style='width:100%;' controls preload="none" poster="images/DreamBeatsThumbnail.png">
+                <source src='videos/DreamBeats.mp4' type="video/mp4">
+                Your browser doesn't support HTML5 video.
+            </video>
+            <p class="centered"><a href="downloads/DreamBeatsWindows.zip">Download</a></p>
+        </div>
 
-    <!-- Game Development Challenge Projects (2019)-->
-    <h1 id="Link2">Game Development Challenge Projects (2019)</h1>
-    <video style='width:100%;' controls preload="none" poster="images/OrbiterThumbnail.png">
-        <source src='videos/GDCProjects2019.mp4' type="video/mp4">
-        Your browser doesn't support HTML5 video.
-    </video>
-    <p>The projects presented in the video are the result of a game development challenge course held in 2019, in which two weeks of time were given to complete each prototype. 
-        The first challenge was to develop a game that is played using a single button (Orbiter). The theme of the second challenge was to make an educational game about bees, wasps, etc... (Games about bees). 
-        The subject of the third game was VR (Golf With Guns).</p>
+        <!--Game Technology Projects (2021)-->
+        <div class="content">
+            <h1>Game Technology Projects (2021)</h1>
+            <video style='width:100%;' controls preload="none" poster="images/EscapeAndroidThumbnail.jpg">
+                <source src='videos/Escape.mp4' type="video/mp4">
+                Your browser doesn't support HTML5 video.
+            </video>
+            <p class="centered"></p>
+        </div>
 
-    <br>
-    <hr>
+        <!--Block Builder 3D (2021)-->
+        <div class="content">
+            <h1>Block Builder 3D (2021)</h1>
+            <video style='width:100%;' controls preload="none" poster="images/BlockBuilder3DThumbnail.jpg">
+                <source src='videos/BlockBuilder3D.mp4' type="video/mp4">
+                Your browser doesn't support HTML5 video.
+            </video>
+            <p class="centered"></p>
+        </div>
 
-    <!--Dream Beats (2020)-->
-    <h1 id="Link3">Dream Beats (2020)</h1>
-    <video style='width:100%;' controls preload="none" poster="images/DreamBeatsThumbnail.png">
-        <source src='videos/DreamBeats.mp4' type="video/mp4">
-        Your browser doesn't support HTML5 video.
-    </video>
-    <p>Dream Beats is a platform game that was developed during a game project course held in 2020.</p>
-    <p>Wanna try the game? Click <a href="downloads/DreamBeatsWindows.zip">here</a> to download it for Windows.</p>
+        <!--Uber Terrain (2021)-->
+        <div class="content">
+            <h1>Uber Terrain (2021)</h1>
+            <video style='width:100%;' controls preload="none" poster="images/UberTerrainThumbnail.jpg">
+                <source src='videos/UberTerrain.mp4' type="video/mp4">
+                Your browser doesn't support HTML5 video.
+            </video>
+            <p class="centered"></p>
+        </div>
 
-    <br>
-    <hr>
+        <!--Master's thesis (2021)-->
+        <div class="content">
+            <h1>Master's thesis (2021)</h1>
+            <video style='width:100%;' controls preload="none" poster="images/mc_and_nsn_thumbnail.jpg">
+                <source src='videos/mc_and_nsn.mp4' type="video/mp4">
+                Your browser doesn't support HTML5 video.
+            </video>
+            <p class="centered">Published: <a href="https://jyx.jyu.fi/handle/123456789/79364">https://jyx.jyu.fi/handle/123456789/79364</a></p>
+        </div>
 
-    <!--Game Technology Projects (2021)-->
-    <h1 id="Link4">Game Technology Projects (2021)</h1>
-    <video style='width:100%;' controls preload="none" poster="images/EscapeAndroidThumbnail.jpg">
-        <source src='videos/Escape.mp4' type="video/mp4">
-        Your browser doesn't support HTML5 video.
-    </video>
-    <p>I attended a game technology course in 2021, which dealt weekly with various topics related to game development such as game engines, mobile development, html5 as a game platform (<a href='https://max0power.github.io/Snake/'>Glitchy Snake</a>), artificial intelligence, procedural generation, VR/AR, testing and shaders. The game shown in the video is an experimental hybrid VR/AR Android game that uses the device's gyroscope for aiming.</p>
-    <p>Below you can see some pictures of other projects done during the course:</p>
-    <figure>
-        <img src='images/pong_unreal.png' style='max-width:1280px; display:block; margin-left: auto; margin-right: auto; width:100%;'></img>
-        <figcaption>Fig.1 - Pong made with Unreal (The theme of the week was game engines and the task was to get to know an unfamiliar game engine by doing a pong game).</figcaption>
-    </figure>
-    <figure>
-        <img src='images/Roll1.png' style='max-width:1280px; display:block; margin-left: auto; margin-right: auto; width:100%;'></img>
-        <br>
-        <img src='images/Roll2.png' style='max-width:1280px; display:block; margin-left: auto; margin-right: auto; width:100%;'></img>
-        <figcaption>Fig.2 - Roll (The theme of the week was mobile development and I decided to make a simple game where the ball was steered with an accelerometer).</figcaption>
-    </figure>
-    <figure>
-        <img src='images/GlitchySnake.png' style='max-width:1280px; display:block; margin-left: auto; margin-right: auto; width:100%;'></img>
-        <figcaption>Fig.3 - <a href='https://max0power.github.io/Snake/'>Glitchy Snake</a> (The theme of the week was HTML5 and the task was to create a snake game with Phaser).</figcaption>
-    </figure>
-    <figure>
-        <video class='loop' style='max-width:1280px; display:block; margin-left: auto; margin-right: auto; width:100%;' playsinline webkit-playsinline muted loop autoplay>
-            <source class src='videos/ParticleShader.mp4' type="video/mp4">
-            Your browser doesn't support HTML5 video.
-        </video>
-        <figcaption>Fig.4 - Particle Shader (The theme of the week was the shaders and the shader shown in the picture is made with Shadertoy).</figcaption>
-    </figure>
-    
-    <br>
-    <hr>
+        <!--Rect Hero (2022)-->
+        <div class="content">
+            <h1>Rect Hero (2022)</h1>
+            <video style='width:100%;' controls preload="none" poster="images/RectHeroThumbnail.png">
+                <source src='videos/RectHero.mp4' type="video/mp4">
+                Your browser doesn't support HTML5 video.
+            </video>
+            <p class="centered">Published: <a href="https://gamesfromnorth.itch.io/rect-hero">https://gamesfromnorth.itch.io/rect-hero</a></p>
+        </div>
 
-    <!--Block Builder 3D (2021)-->
-    <h1 id="Link5">Block Builder 3D (2021)</h1>
-    <video style='width:100%;' controls preload="none" poster="images/BlockBuilder3DThumbnail.jpg">
-        <source src='videos/BlockBuilder3D.mp4' type="video/mp4">
-        Your browser doesn't support HTML5 video.
-    </video>
-    <p>Block Builder 3D is a tool whose idea is to make 3D modeling easy and straightforward. I developed the program in 2021 as part of a special assignment course that enabled the design and development of a freely chosen project.</p>
-
-    <br>
-    <hr>
-
-    <!--Uber Terrain (2021)-->
-    <h1 id="Link6">Uber Terrain (2021)</h1>
-    <video style='width:100%;' controls preload="none" poster="images/UberTerrainThumbnail.jpg">
-        <source src='videos/UberTerrain.mp4' type="video/mp4">
-        Your browser doesn't support HTML5 video.
-    </video>
-    <p>Uber Terrain is a small project I did in 2021 for the course about the creative application of basic computer graphics. It utilizes procedural terrain generation which is discussed in my <a href="https://jyx.jyu.fi/handle/123456789/79364">master’s thesis</a>.</p>
-
-    <br>
-    <hr>
-
-    <!--Master's thesis (2021)-->
-    <h1 id="Link7">Master's thesis (2021)</h1>
-    <video style='width:100%;' controls preload="none" poster="images/mc_and_nsn_thumbnail.jpg">
-        <source src='videos/mc_and_nsn.mp4' type="video/mp4">
-        Your browser doesn't support HTML5 video.
-    </video>
-    <p>My <a href="https://jyx.jyu.fi/handle/123456789/79364">master's thesis</a> researches Marching Cubes and Naive Surface Nets algorithms that use volumetric data to construct 3D models. We used the Unity game engine to test algorithms. The video gives a small glimpse of what you can do with them.</p>
-
-    <br>
-    <hr>
-
-    <!--Rect Hero (2022)-->
-    <h1 id="Link8">Rect Hero (2022)</h1>
-    <video style='width:100%;' controls preload="none" poster="images/RectHeroThumbnail.png">
-        <source src='videos/RectHero.mp4' type="video/mp4">
-        Your browser doesn't support HTML5 video.
-    </video>
-    <p>In the summer of 2022, I started developing my own HTML5/javascript game engine and made Rect Hero with it. It is a platform game where evil has taken over the player's homeland and the player's task is to get rid of the evil. The game is playable at <a href="https://gamesfromnorth.itch.io/rect-hero">https://gamesfromnorth.itch.io/rect-hero</a>.</p>
-
-    <br>
-    <hr>
-
-    <h1 id="Link9">Escape (2022)</h1>
-    <video style='width:100%;' controls preload="none" poster="images/EscapeRemasteredThumbnail.png">
-        <source src='videos/EscapeRemastered.mp4' type="video/mp4">
-        Your browser doesn't support HTML5 video.
-    </video>
-    <p>I got excited about itch.io, so I decided to publish a new game there. I made a more polished version of the zombie horror game that I designed in 2021. The idea of the game is that the player is trapped in a secret laboratory overrun by zombies. In order to get out alive, the player has to collect various items such as ammo, keycards, etc. It is playable at <a href="https://gamesfromnorth.itch.io/escape">https://gamesfromnorth.itch.io/escape</a>.</p>
-
-    <br>
-    <br>
-
+        <!-- Escape (2022) -->
+        <div class="content">
+            <h1>Escape (2022)</h1>
+            <video style='width:100%;' controls preload="none" poster="images/EscapeRemasteredThumbnail.png">
+                <source src='videos/EscapeRemastered.mp4' type="video/mp4">
+                Your browser doesn't support HTML5 video.
+            </video>
+            <p class="centered">Published: <a href="https://gamesfromnorth.itch.io/escape">https://gamesfromnorth.itch.io/escape</a></p>
+        </div>
     </div>
+    <div style="display: block; height: 512px;"></div>
 </body>
 </html> 
