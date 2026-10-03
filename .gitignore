@@ -1,0 +1,17 @@
+# Käyttöjärjestelmän luomat turhat tiedostot
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Koodieditorien asetukset (esim. VS Code)
+.vscode/
+.idea/
+*.swp
+
+# Paikalliset ympäristömuuttujat (varmuuden vuoksi, jos käytät API-avaimia)
+.env
+*.local
